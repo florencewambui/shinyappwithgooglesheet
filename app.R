@@ -10,12 +10,13 @@ shinyApp(ui = dashboardPage(
   dashboardHeader(title = "Data Maturity Survey"),
   dashboardSidebar(disable = TRUE),
   dashboardBody(
-    h4("Organization Contacts"),
-    textInput("input1", "What is your name:"),
-    textInput("input2", "What organization are you representing?"),
-    textInput("input3", "What is your job title in the organization?"),
-    textInput("input4", "What email address do we send the report to?"),
-    h4("Survey"),
+    box(width = 12,
+    h2("Organization Contacts"),
+    textInput("input1", "What is your name:", width = "30%"),
+    textInput("input2", "What organization are you representing?", width = "30%"),
+    textInput("input3", "What is your job title in the organization?", width = "30%"),
+    textInput("input4", "What email address do we send the report to?", width = "30%"),
+    h2("Survey"),
     helpText("Please select the most appropriate statement for your organization"),
     h3("Data"),
     radioButtons("input5",  "Data is collected", choices = c("Rarely", "Occasionally", "Consistently")),
@@ -106,9 +107,26 @@ shinyApp(ui = dashboardPage(
                              "Advanced analytical approaches e.g predictive, network analysis, text analytics, deep learning")),
     actionButton("submit", "Submit")
     
-  )
+  ))
 ),
+
+
+
 server = function(input, output){
+  user_responses = gs_key("1zw21DIjxDt4qF6fcBUkzL_0Gv1pEIkvZg1KVHrOEjQQ") # always ensure the google sheet has a column names and one row of data. otherwise gs_add_row() will output an error
+  user_inputs = reactive(c(input$input1, input$input2, input$input3, input$input4, input$input5, input$input6,
+                           input$input7, input$input8, input$input9, input$input10, input$input11, input$input12,
+                           input$input13, input$input14, input$input15, input$input16, input$input17, input$input18,
+                           input$input19, input$input20, input$input21, input$input22, input$input23, input$input24,
+                           input$input25, input$input26, input$input27))
+  
+  
+  
+  observeEvent(input$submit,{
+    user_responses %>%
+      gs_add_row(ws = 1, input = user_inputs())
+  })
+               
   
 }
 )
